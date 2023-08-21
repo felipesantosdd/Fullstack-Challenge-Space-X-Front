@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'; // Import React and its hooks
 import Head from 'next/head';
 import { Context } from '@/provider';
-import { Container, ListaLaunches, Table, Tbody, Thead, TheadDiv, TbodyDiv } from './styled';
+import { Container, ListaLaunches, Table, Tbody, Thead, TheadDiv, TbodyDiv } from '../styles/styled';
 
 export default function Home() {
     const { getLauncher, launchers, getRocket, rockets } = useContext(Context); // Destructure getLauncher and launchers from context
