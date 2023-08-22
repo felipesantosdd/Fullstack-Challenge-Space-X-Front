@@ -1,18 +1,33 @@
-import React, { useContext, useEffect } from 'react'; // Import React and its hooks
+import React, { useContext, useEffect } from 'react';
 import Head from 'next/head';
 import { Context } from '@/provider';
-import { Container, ListaLaunches, Table, Tbody, Thead, TheadDiv, TbodyDiv } from '../styles/styled';
+import Button from '@mui/material/Button';
+import { Container, ListaLaunches, Table, Tbody, Thead, TheadDiv, TbodyDiv, ButtonsBox } from '../styles/styled';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import Pizza from '@/components/grafic';
 
 export default function Home() {
-    const { getLauncher, launchers, getRocket, rockets } = useContext(Context); // Destructure getLauncher and launchers from context
+    const { getLauncher, launchers, getRocket, rockets, page, setPage, finalPage,getStatus } = useContext(Context);
 
     useEffect(() => {
-        getLauncher();
+        getLauncher(page); // Fetch initial data based on page
         getRocket();
+        getStatus()
     }, []);
 
-    console.log('launcher', launchers);
-    console.log('rocket', rockets)
+    function nextPage() {
+        setPage(page + 1);
+    }
+
+    function prevPage() {
+        if (page > 1) {
+            setPage(page - 1);
+        }
+    }
+
+    useEffect(() => {
+        getLauncher(page); // Fetch data based on updated page
+    }, [page]);
 
     return (
         <>
@@ -22,10 +37,11 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main>
+            <main style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+                <Pizza/>
                 <Container>
                     <ListaLaunches>
-                        <Table> {/* Use the Table component */}
+                        <Table>
                             <TheadDiv>
                                 <Thead>
                                     <tr>
@@ -78,11 +94,11 @@ export default function Home() {
                                                 {
                                                     (() => {
                                                         return launcher.success ? (
-                                                            <span style={{ backgroundColor: "#17a362", padding: "0.2em 0.5em", borderRadius: "4px", color: "#FFF", height: 20 }}>
+                                                            <span style={{ backgroundColor: "#17a362", padding: "0.2em 0.5em", borderRadius: "4px", color: "#FFF", height: 20, width: '100px' }}>
                                                                 Sucesso
                                                             </span>
                                                         ) : (
-                                                            <span style={{ backgroundColor: "#da4a64", padding: "0.2em 0.5em", borderRadius: "4px", color: "#FFF", height: 20 }}>
+                                                            <span style={{ backgroundColor: "#660517", padding: "0.2em 0.5em", borderRadius: "4px", color: "#FFF", height: 20, width: '100px' }}>
                                                                 Falha
                                                             </span>
                                                         );
@@ -90,17 +106,39 @@ export default function Home() {
                                                 }
                                             </td>
                                         </TbodyDiv>
-                                        <TbodyDiv>
+                                        <TbodyDiv style={{ maxWidth: '100px' }}>
                                             <td>
                                                 <a href={launcher.links.webcast} target='blank'>
-                                                    <img src='../img/youtube.png' alt='youtube' />
+                                                    <YouTubeIcon style={{ color: 'red' }} />
                                                 </a>
                                             </td>
                                         </TbodyDiv>
-                                        <TbodyDiv> teste</TbodyDiv>
+
                                     </tr>
                                 ))}
                             </Tbody>
+                            <ButtonsBox>
+                                <Button
+                                    style={{
+                                        width: '150px',
+                                        marginBottom: '10px'
+                                    }}
+                                    disabled={page <= 1}
+                                    onClick={prevPage}
+                                    variant="outlined">
+                                    Anterior
+                                </Button>
+                                <Button
+                                    style={{
+                                        width: '150px',
+                                        marginBottom: '10px'
+                                    }}
+                                    onClick={nextPage}
+                                    disabled={page >= finalPage}
+                                    variant="outlined">
+                                    Próxima
+                                </Button>
+                            </ButtonsBox>
                         </Table>
                     </ListaLaunches>
                 </Container>

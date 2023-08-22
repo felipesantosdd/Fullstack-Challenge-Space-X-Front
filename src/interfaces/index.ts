@@ -1,11 +1,12 @@
 interface LaunchCount {
     id: string;
     launchs: number;
+    dates: string[]
 }
 export interface IStatus {
-    success: number;
-    failure: number;
-    launchCounts: LaunchCount[];
+    rocket: string;
+    sucess: boolean;
+    date: string;
 }
 
 interface Height {

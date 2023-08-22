@@ -2,16 +2,18 @@ import { GetLaunchesService } from "@/api/getLauncherService";
 import { GetRocketsService } from "@/api/getRocketsService";
 import { GetStatusService } from "@/api/getStatusService";
 import { ILauncher, IRockets, IStatus } from "@/interfaces";
-import { createContext,  ReactNode, useState } from "react";
+import { createContext,  Dispatch,  ReactNode, SetStateAction, useState } from "react";
 
 export type ContextProps = {
-    getLauncher(): Promise<ILauncher[] | void>;
+    getLauncher(page: number): Promise<ILauncher[] | void>
     getRocket(): Promise<IRockets[] | void>;
-    getStatus(): Promise<IStatus | void>;
-    ignite(): Promise<void>;
+    getStatus(): Promise<IStatus[] | void>;
     launchers: ILauncher[];
     rockets: IRockets[];
-    status: IStatus | undefined
+    status: IStatus[] | undefined,
+    page: number,
+    setPage: Dispatch<SetStateAction<number>>,
+    finalPage: number
 };
 
 export type ProviderType = {
@@ -25,24 +27,19 @@ export const Context = createContext<ContextProps>({} as ContextProps);
 export function Provider({ children }: ProviderType) {
 
     const [page, setPage] = useState(1)
+    const [finalPage, setFinalPage] = useState(0)
     const [launchers, setLaunchers] = useState<ILauncher[]>([])
     const [rockets, setRockets] = useState<IRockets[]>([])
-    const [status, setStatus] = useState<IStatus>()
-
-    async function ignite():Promise<void>{
-        await getLauncher()
-        console.log('ignite')
-        await getRocket()
-        await getStatus()
-    }
+    const [status, setStatus] = useState<IStatus[]>([])
 
 
-    async function getLauncher(): Promise<ILauncher[] | void> {
+    async function getLauncher(pagina:number): Promise<ILauncher[] | void> {
         try {
-            const data = await GetLaunchesService(page)
+            const data = await GetLaunchesService(pagina)
+            console.log(data)
             const launches: ILauncher[] = data.results
-            console.log(launches)
             setLaunchers(launches)
+            setFinalPage(data.totalPages)
             return launches
         } catch (error) {
             console.error(error)
@@ -61,7 +58,7 @@ export function Provider({ children }: ProviderType) {
         }
     }
 
-    async function getStatus(): Promise<IStatus | void>{
+    async function getStatus(): Promise<IStatus[] | void>{
         try {
             const status = await GetStatusService()
             setStatus(status)
@@ -80,10 +77,12 @@ export function Provider({ children }: ProviderType) {
             getLauncher,
             getRocket,
             getStatus,
-            ignite,
             launchers,
             rockets,
-            status
+            status,
+            page,
+            setPage,
+            finalPage
         }}>
             {children}
         </Context.Provider>

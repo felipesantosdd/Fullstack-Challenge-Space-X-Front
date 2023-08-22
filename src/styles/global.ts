@@ -11,10 +11,12 @@ export default createGlobalStyle`
   }
 
   body {
-    background-image: url('https://static.vecteezy.com/ti/vetor-gratis/p3/6413041-pink-gradient-pastle-soft-abstract-background-you-can-use-this-background-for-your-content-like-as-technology-video-game-promotion-card-banner-sports-presentation-website-mais-vetor.jpg');
-    background-size: auto; /* Para ajustar a imagem de fundo ao tamanho da tela */
+    overflow-x: hidden;
+    background-image: url('https://wallpapers.com/images/hd/spacex-gray-scale-0epbpm1ma17oaabl.jpg');
+    background-size: cover; /* Para ajustar a imagem de fundo ao tamanho da tela */
     background-repeat: no-repeat;
     background-attachment: fixed;
     color: white;
+
   }
 `;
