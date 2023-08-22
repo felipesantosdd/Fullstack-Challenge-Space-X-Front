@@ -23,14 +23,16 @@ const GraficoPizza = () => {
                 const counts:any = {};
 
                 status?.forEach((date) => {
-                        const year:any = new Date(date).getFullYear().toString();
+                    if (date){
+
+                    const year: any = new Date(date.date).getFullYear().toString();
 
                         if (!counts[year]) {
                             counts[year] = {};
                         }
 
                         counts[year] = (counts[year] || 0) + 1;
-
+                    }
                 });
 
                 setRocketsByYear(counts);
@@ -47,7 +49,7 @@ const GraficoPizza = () => {
     const colors: any = ['#8884d8', '#82ca9d', '#cd4569', '#e37400'];
 
 
-    const PizzaData:any = rocketNames.map((rocketName:string, index) => ({
+    const PizzaData:any = rocketNames.map((rocketName:string, index:any) => ({
         name: (rockets.filter(ele => ele.id === rocketName))[0].name,
         rockets: status?.reduce((acc, ele) => {
             if (ele.rocket === rocketName) {
@@ -62,13 +64,6 @@ const GraficoPizza = () => {
 
 
     const years = Object.keys(rocketsByYear);
-    const BarData = years.map((year) => {
-        const dataEntry = { year: year };
-        rocketNames.forEach((rocketName) => {
-            dataEntry[(rockets.filter(ele => ele.id === rocketName))[0].name] = rocketsByYear[year][rocketName] || 0;
-        });
-        return dataEntry;
-    });
 
     const data = [
         {
@@ -112,7 +107,7 @@ const GraficoPizza = () => {
 
     status?.forEach((ele) => {
         const year = new Date(ele.date).getFullYear();
-        const existingData = newData.find(item => item.ano === year);
+        const existingData = newData.find((item: { ano: number; }) => item.ano === year);
 
         if (existingData) {
             existingData["Falcon 1"] += ele.rocket === "5e9d0d95eda69955f709d1eb" ? 1 : 0;
@@ -130,7 +125,7 @@ const GraficoPizza = () => {
         }
     });
 
-    const sucess: number = status?.reduce((acc, ele) => {
+    const sucess: any = status?.reduce((acc, ele) => {
         if (ele.sucess === true) {
             acc++;
         }
@@ -140,38 +135,34 @@ const GraficoPizza = () => {
     return (
         <>
             <Container>
+                <div style={{width:'auto', display:'flex'}}>
 
-                <PizzaContainer>
-                    <ContainerChart>
-                        <TextBox>
-                            <h3>Lançamento de foguetes</h3>
-                        </TextBox>
+
+                <ContainerChart>
+                    <PizzaContainer>
+                            <TextBox>
+                                <h3>Lançamento de foguetes</h3>
+                            </TextBox>
                             <Chart>
-                                <PieChart width={500} height={400}>
-                                    <Pie data={PizzaData} dataKey="rockets" label></Pie>
-                                    <Legend layout="vertical" verticalAlign="middle" align="left" />
-                                </PieChart>
+
+                            <PieChart width={500} height={300}>
+                                <Pie data={PizzaData} dataKey="rockets"></Pie>
+                                <Legend layout="vertical" verticalAlign="middle" align="left" />
+                            </PieChart>
 
 
-                            </Chart>
+                        </Chart>
 
+                </PizzaContainer>
                     </ContainerChart>
-            </PizzaContainer>
-
-                <div style={{ width: '50%'  }}>
-
                     <ContainerChart>
+
+                    <ChartBar>
                         <TextBox>
                             <h3>Lançamento por ano</h3>
                         </TextBox>
-                    <ChartBar>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent:'center' }}>
-                                <BarChart width={500} height={300} data={newData} margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent:'center', maxWidth:'100%' }}>
+                                <BarChart width={500} height={300} data={newData}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="ano" />
                                     <YAxis  />
@@ -204,10 +195,11 @@ const GraficoPizza = () => {
                         </ChartBar>
                     </ContainerChart>
                 </div>
+
                 <Results >
                     <h3>Resultados de lançamento</h3>
                     <strong>Sucesso: {sucess}</strong>
-                    <strong>Falhas: {(status?.length - sucess)}</strong>
+                    <strong>Falhas: {(status? status.length - sucess : '')}</strong>
                 </Results>
             </Container>
         </>

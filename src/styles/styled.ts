@@ -31,7 +31,6 @@ export const Table = styled.table`
     border-radius: 10px;
     align-items: center;
     max-width:800px;
-    min-width: 300px;
     height: 100%;
     min-height: 500px;
     @media screen and (max-width: 600px) {
